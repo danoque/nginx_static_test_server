@@ -1,0 +1,1 @@
+# nginx_static_test_server
