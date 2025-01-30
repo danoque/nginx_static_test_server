@@ -1,0 +1,8 @@
+version: "3.8"
+services:
+  static_server:
+    build: ./
+    ports:
+      - "2222:22"
+      - "80:80"
+    container_name: static_server

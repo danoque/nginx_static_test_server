@@ -1,0 +1,11 @@
+- name: Secure SSH configuration
+  ansible.builtin.lineinfile:
+    path: /etc/ssh/sshd_config
+    regex: "{{ item.regex }}"
+    line: "{{ item.line }}"
+  loop:
+    - { regex: "^PermitRootLogin", line: "PermitRootLogin no" }
+    - { regex: "^PasswordAuthentication", line: "PasswordAuthentication no" }
+    - { regex: "^LogLevel", line: "LogLevel VERBOSE" }
+    - { regex: "^X11Forwarding", line: "X11Forwarding no" }
+  notify: Reload SSH

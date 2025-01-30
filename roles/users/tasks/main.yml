@@ -1,0 +1,35 @@
+- name: Ensure groups exist
+  ansible.builtin.group:
+    name: "{{ item }}"
+    state: present
+  loop: "{{ users | map(attribute='groups') | select('defined') | list | flatten | unique }}"
+
+- name: Manage users
+  ansible.builtin.user:
+    name: "{{ item.name }}"
+    shell: "{{ item.shell }}"
+    state: "{{ item.state }}"
+    password: "{{ item.password | default(omit) }}"
+    groups: "{{ (item.groups if item.groups is iterable and item.groups is not string else [item.groups]) | default([]) + ['sudo'] }}"
+    append: yes
+  loop: "{{ users }}"
+
+- name: Ensure sudoers file allows passwordless sudo for all users
+  ansible.builtin.copy:
+    dest: "/etc/sudoers.d/ansible_users"
+    content: |
+      {% for user in users %}
+      {{ user.name }} ALL=(ALL) NOPASSWD:ALL
+      {% endfor %}
+    mode: 0440
+    owner: root
+    group: root
+  when: users | length > 0
+
+- name: Set authorized keys
+  ansible.builtin.authorized_key:
+    user: "{{ item.name }}"
+    key: "{{ item.ssh_key }}"
+    state: present
+  loop: "{{ users }}"
+  when: item.ssh_key is defined

@@ -1,0 +1,19 @@
+server {
+    listen 80;
+    server_name _;
+
+    access_log /var/log/nginx/static-access.log;
+    error_log /var/log/nginx/static-error.log;
+
+    location /images/ {
+        alias {{ static_path }};
+        autoindex on;
+
+        gzip on;
+        gzip_types image/jpeg image/png image/gif image/webp image/svg+xml;
+
+        expires {{ nginx_cache_time }};
+
+        add_header Cache-Control "public, max-age=3600";
+    }
+}

@@ -1,0 +1,56 @@
+- name: Install Nginx
+  ansible.builtin.package:
+    name: nginx
+    state: present
+
+- name: Create static files directory
+  ansible.builtin.file:
+    path: "{{ static_path }}"
+    state: directory
+    owner: www-data
+    group: www-data
+    mode: "0755"
+
+- name: Copy main Nginx config
+  ansible.builtin.template:
+    src: nginx.conf.j2
+    dest: /etc/nginx/nginx.conf
+    owner: root
+    group: root
+    mode: "0644"
+
+- name: Copy site config
+  ansible.builtin.template:
+    src: static.conf.j2
+    dest: /etc/nginx/sites-available/static
+
+- name: Enable site
+  ansible.builtin.file:
+    src: /etc/nginx/sites-available/static
+    dest: /etc/nginx/sites-enabled/static
+    state: link
+
+- name: Delete default site
+  ansible.builtin.file:
+    path: /etc/nginx/sites-enabled/default
+    state: absent
+
+- name: Delete default site
+  ansible.builtin.file:
+    path: /etc/nginx/sites-available/default
+    state: absent
+
+# - name: Notify reload only once
+#   ansible.builtin.meta: flush_handlers
+
+# - name: Check config before reload
+#   ansible.builtin.command: nginx -t
+#   register: nginx_test
+#   changed_when: nginx_test.rc != 0
+#   notify: Reload Nginx
+
+- name: Ensure Nginx is enabled and restarted
+  ansible.builtin.service:
+    name: nginx
+    state: restarted
+    enabled: yes

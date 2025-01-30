@@ -1,0 +1,10 @@
+- name: Download static files
+  ansible.builtin.get_url:
+    url: "{{ static_url }}"
+    dest: "/tmp/images.zip"
+
+- name: Unzip static files
+  ansible.builtin.unarchive:
+    src: "/tmp/images.zip"
+    dest: "{{ static_path }}"
+    remote_src: yes

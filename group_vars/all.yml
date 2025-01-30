@@ -1,0 +1,28 @@
+users:
+  - name: user1
+    shell: /bin/bash
+    state: present
+    password: "$6$rounds=656000$WpJw0snqVgi2E3P1$hhKhqA3Z9EghvDbskM1GqDBbh1MYB5xQQT5.LFqDK8.J.L7VRWexhsdYZj39.csyHDP7qLJSwxBdA4HQ9KpgQ0"  # пароль: SuperSecret1!
+    groups: developers
+    ssh_key: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIKJDSeBYAUrVLVfnvHvG1jhN0bGHzywMOjNNJp5z87We user1@static_server"
+
+  - name: user2
+    shell: /bin/zsh
+    state: present
+    password: "$6$rounds=656000$3kT3LRXMfNd/UcfC$H2c0B6DdkLaxqGBO7vljHZcx9cEBDHZzMsW9U7slP.OhCyydXqZ8DHCJEr4Scuo6d8CS8n1XPMRDP5V2tlXHu/"  # пароль: UltraSafeP@ss2
+    groups: admins
+    ssh_key: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAILxgzSnL/IBEgp5MDNQ6uHUrxvkOEkdg8Wwgub89eaMS user2@static_server"
+
+packages:
+  - htop
+  - ncdu
+  - git
+  - unzip
+  - bzip2
+  - curl
+  - nano
+
+nginx_cache_time: 1h
+nginx_log_path: /var/log/nginx/access.log
+static_url: "https://github.com/danoque/nginx_static_test_server/releases/download/clouds/clouds.zip"
+static_path: /var/www/images/
